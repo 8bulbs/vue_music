@@ -1,6 +1,9 @@
 <template>
   <div v-if="playList.length" class="player-container">
-    <div class="player-mini-content">
+    <div v-show="isFullScreen" class="player-normal-content">
+      大播放器
+    </div>
+    <div v-show="!isFullScreen" class="player-mini-content">
       <div class="poster">
         <img :src="playList[0].album.picUrl" alt="">
       </div>
