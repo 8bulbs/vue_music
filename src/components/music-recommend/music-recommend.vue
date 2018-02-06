@@ -38,6 +38,7 @@ import { getBanner, getRecommend, getNewSong, test } from 'api/recommend'
 import { STATUS_OK } from 'api/config'
 import Loading from 'base/loading/loading'
 import { mapMutations } from 'vuex'
+import { getSong } from 'api/song'
 
 export default {
   data() {
@@ -84,11 +85,23 @@ export default {
         }
       })
     },
-    $_playTheSong(song) {
-      this.setPlayList([song])
+    $_playTheSong(item) {
+      getSong(item.id)
+        .then(res => {
+          if (res.status === STATUS_OK) {
+            let song = res.data.songs[0]
+            this.setPlayList([song])
+            this.setFullScreen(true)
+            this.setCurrentIndex(0)
+            this.setIsPlay(true)
+          }
+        })
     },
     ...mapMutations({
-      setPlayList: 'SET_PLAYLIST'
+      setPlayList: 'SET_PLAYLIST',
+      setFullScreen: 'SET_FULL_SCREEN',
+      setCurrentIndex: 'SET_CURRENT_INDEX',
+      setIsPlay: 'SET_ISPLAY'
     })
   },
   components: {

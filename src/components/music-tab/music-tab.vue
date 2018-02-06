@@ -4,11 +4,11 @@
       <router-link to="/recommend" tag="li" class="tab">
         <span class="tab-text">推荐</span>
       </router-link>
-      <router-link to="/rank" tag="li" class="tab">
-        <span class="tab-text">排行</span>
-      </router-link>
       <router-link to="/singer" tag="li" class="tab">
         <span class="tab-text">歌手</span>
+      </router-link>
+      <router-link to="/rank" tag="li" class="tab">
+        <span class="tab-text">排行</span>
       </router-link>
       <router-link to="/search" tag="li" class="tab">
         <span class="tab-text">搜索</span>

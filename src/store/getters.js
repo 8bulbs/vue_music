@@ -4,6 +4,8 @@
 
 export const singer = state => state.singer
 
+export const isPlay = state => state.isPlay
+
 export const playList = state => state.playList
 
 export const fullScreen = state => state.fullScreen

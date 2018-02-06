@@ -1,16 +1,31 @@
 <template>
   <div v-if="playList.length" class="player-container">
-    <div v-show="isFullScreen" class="player-normal-content">
-      大播放器
-    </div>
-    <div v-show="!isFullScreen" class="player-mini-content">
-      <div class="poster">
-        <img :src="playList[0].album.picUrl" alt="">
+    <div v-show="fullScreen" class="player-normal-content">
+      <div class="background">
+        <img :src="currentSong.al.picUrl" alt="">
       </div>
-      <p class="player-title">{{playList[0].name+'('+playList[0].artists[0].name+')'}}</p>
+      <div class="disc">
+        <div class="disc-wrapper">
+          <img ref="disc-image" :class="{'rotate':isPlay}" :src="currentSong.al.picUrl" alt="">
+          <span class="mask"></span>
+        </div>
+      </div>
+      <div @click="$_toggleFullScreen" class="back">
+        <i class="iconfont">&#xe60b;</i>
+      </div>
       <div @click="$_togglePlay" class="play-pause">
-        <i class="iconfont play">&#xe615;</i>
-        <i class="iconfont pause">&#xe7af;</i>
+        <i v-show="!isPlay" class="iconfont play">&#xe615;</i>
+        <i v-show="isPlay" class="iconfont pause">&#xe7af;</i>
+      </div>
+    </div>
+    <div v-show="!fullScreen" class="player-mini-content">
+      <div @click="$_toggleFullScreen" class="poster">
+        <img :src="currentSong.al.picUrl" alt="">
+      </div>
+      <p class="player-title">{{currentSong.name}}</p>
+      <div @click="$_togglePlay" class="play-pause">
+        <i v-show="!isPlay" class="iconfont play">&#xe615;</i>
+        <i v-if="isPlay" class="iconfont pause">&#xe7af;</i>
       </div>
       <div class="iconfont play-list">
         <i class="iconfont">&#xe640;</i>
@@ -31,11 +46,12 @@ export default {
   computed: {
     ...mapGetters([
       'playList',
-      'isPlay'
+      'isPlay',
+      'fullScreen',
+      'currentSong'
     ])
   },
   created() {
-    console.log(this.playList)
   },
   watch: {
     playList() {
@@ -46,10 +62,14 @@ export default {
     }
   },
   methods: {
+    $_toggleFullScreen() {
+      this.setFullScreen(!this.fullScreen)
+    },
     $_getSongUrl() {
-      let id = this.playList[0].id
+      this.audio.pause()
+      let id = this.currentSong.id
       this.audio.src = 'http://music.163.com/song/media/outer/url?id=' + id + '.mp3'
-      this.isPlay = true
+      this.audio.play()
     },
     $_playOrPause() {
       if (this.isPlay) {
@@ -59,11 +79,11 @@ export default {
       }
     },
     $_togglePlay() {
-      this.isPlay = !this.isPlay
-      this.setIsPlay(this.isPlay)
+      this.setIsPlay(!this.isPlay)
     },
     ...mapMutations({
-      setIsPlay: 'SET_ISPLAY'
+      setIsPlay: 'SET_ISPLAY',
+      setFullScreen: 'SET_FULL_SCREEN'
     })
   }
 }
@@ -73,9 +93,87 @@ export default {
   @import "~assets/stylus/variable"
   @import "~assets/stylus/mixin"
  .player-container
+  .player-normal-content
+    position fixed
+    left 0
+    right 0
+    bottom 0
+    top 0
+    z-index 1000
+    width 100%
+    height 100%
+    background $color-player-gray /*debug*/
+    .play-pause
+      display inline-block
+      border 2px solid #fff
+      border-radius 50%
+      position absolute
+      left 50%
+      bottom 25px
+      transform translate(-50%,-50%)
+      width 28px
+      height 28px
+      text-align center
+      line-height 28px
+      .play
+        display block
+        color $color-text-white
+        font-size $font-size-s
+        font-weight bold
+      .pause
+        display block
+        color $color-text-white
+        font-size $font-size-s
+        font-weight bold
+    .back
+      color $color-text-white
+      position absolute
+      top 25px
+      left 25px
+    .background
+      position absolute
+      let 0
+      top 0
+      width 100%
+      height 100%
+      filter blur(15px)
+      z-index -1
+      img
+        width 100%
+        height 100%
+    .disc
+      width 206px
+      height 206px
+      position absolute
+      left 50%
+      top 25%
+      transform translate(-50%,0%)
+      z-index 150
+      opacity 0.6
+      .disc-wrapper
+        width 198px
+        height 198px
+        img
+          width 130px
+          height 130px
+          border-radius 50%
+          z-index -1
+          margin 34px
+          display block
+        img.rotate
+          animation: rotate 25s linear infinite
+        .mask
+          display block
+          position: absolute;
+          width: 206px;
+          height: 205px;
+          top: -4px;
+          left: -4px;
+          bg-image('coverall')
+          background-position -140px -580px
+  .player-mini-content
     padding 10px
     margin-top 25px
-  .player-mini-content
     position relative
     .poster
       display inline-block
@@ -96,24 +194,26 @@ export default {
       transform translateY(-50%)
     .play-pause
       display inline-block
-      border 1px solid #333
+      border 2px solid #333
       border-radius 50%
       position absolute
       right 55px
       top 50%
       transform translateY(-50%)
-      width $font-size-l
-      height $font-size-l
+      width 28px
+      height 28px
       text-align center
-      line-height $font-size-l
+      line-height 28px
       .play
         display block
         color $color-text
         font-size $font-size-s
+        font-weight bold
       .pause
-        display none
+        display block
         color $color-text
         font-size $font-size-s
+        font-weight bold
     .play-list
       display inline-block
       position absolute
@@ -121,4 +221,9 @@ export default {
       top 50%
       transform translateY(-50%)
       font-size $font-size-l
+    @keyframes rotate
+      0%
+        transform: rotate(0)
+      100%
+        transform: rotate(360deg)
 </style>

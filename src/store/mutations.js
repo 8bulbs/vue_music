@@ -15,12 +15,12 @@ const mutations = {
     state.isPlay = flag
   },
   [types.SET_FULL_SCREEN](state, flag) {
-    state.isFullScreen = flag
+    state.fullScreen = flag
   },
   [types.SET_SEQUENCE_LIST](state, list) {
     state.sequenceList = list
   },
-  [types.SET_PLAY_MODE](state,mode) {
+  [types.SET_PLAY_MODE](state, mode) {
     state.mode = mode
   },
   [types.SET_CURRENT_INDEX](state, index) {

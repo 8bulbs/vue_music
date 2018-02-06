@@ -4,6 +4,7 @@ import MusicRecommend from 'components/music-recommend/music-recommend'
 import MusicRank from 'components/music-rank/music-rank'
 import MusicSearch from 'components/music-search/music-search'
 import MusicSinger from 'components/music-singer/music-singer'
+import MusicSingerDetail from 'components/music-singer-detail/music-singer-detail'
 
 Vue.use(Router)
 
@@ -28,6 +29,10 @@ export default new Router({
     {
       path: '/search',
       component: MusicSearch
+    },
+    {
+      path: '/singerDetail',
+      component: MusicSingerDetail
     }
   ]
 })
