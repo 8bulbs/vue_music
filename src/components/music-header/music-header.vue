@@ -12,6 +12,7 @@ export default {}
   @import "~assets/stylus/variable"
   @import "~assets/stylus/mixin"
   .header
+    position relative
     text-align center
     font-size $font-size-l
     height 64px

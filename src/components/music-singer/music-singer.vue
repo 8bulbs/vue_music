@@ -1,18 +1,24 @@
 <template>
   <div>
-    <ul v-if="singerList.length" class="singer-list">
-      <li @click="$_getSingerSongs(item.id)" :key="index" v-for="(item,index) in singerList" class="singer-list-item">
-        <div class="singer-list-item-content">
-          <img class="singer-list-item-content-image" :src="item.img1v1Url" alt="">
-          <span class="singer-list-item-content-title">{{item.name}}</span>
-        </div>
-      </li>
-    </ul>
-    <router-view></router-view>
+    <scroll ref="scroll" :data="singerList">
+      <ul v-if="singerList.length" class="singer-list">
+        <li @click="$_getSingerSongs(item.id)" :key="index" v-for="(item,index) in singerList" class="singer-list-item">
+          <div class="singer-list-item-content">
+            <img class="singer-list-item-content-image" v-lazy="item.img1v1Url" alt="">
+            <span class="singer-list-item-content-title">{{item.name}}</span>
+          </div>
+        </li>
+      </ul>
+      <router-view></router-view>
+      <div class="loading-container" v-show="!singerList.length">
+        <loading></loading>
+      </div>
+    </scroll>
   </div>
 </template>
 
 <script>
+import Scroll from 'base/scroll/scroll'
 import { getSingerList, getSingerSongs } from 'api/singer'
 import { STATUS_OK } from 'api/config'
 import Loading from 'base/loading/loading'
@@ -24,7 +30,6 @@ export default {
     }
   },
   created() {
-    console.log(2)
     this.$_getSingerList()
   },
   methods: {
@@ -57,7 +62,8 @@ export default {
     })
   },
   components: {
-    Loading
+    Loading,
+    Scroll
   }
 }
 </script>
@@ -81,4 +87,9 @@ export default {
           height 75px
           line-height 75px
           padding-left 35px
+  .loading-container
+    position: absolute
+    width: 100%
+    top: 50%
+    transform: translateY(-50%)
 </style>

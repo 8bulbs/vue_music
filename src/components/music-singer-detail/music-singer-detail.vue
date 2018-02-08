@@ -80,7 +80,7 @@ export default {
     background $color-background
     .title
       text-align center
-      font-size $font-size-l
+      font-size $font-size-m
       .singer-name
         position absolute
         width 100%
@@ -89,7 +89,7 @@ export default {
         transform translateX(-50%)
         color $color-text-white
         .singer-name-alias
-          font-size $font-size-m
+          font-size $font-size-s
       .avatar
         width 100%
       .iconfont
@@ -98,7 +98,7 @@ export default {
         left 15px
         top 10px
         color $color-text-white
-        font-size $font-size-m
+        font-size $font-size-s
   .song-item
     height 55px
     margin-left 15px
@@ -112,5 +112,5 @@ export default {
       color $color-text-gray
       top 0px
       right 15px
-      font-size $font-size-l
+      font-size $font-size-m
 </style>

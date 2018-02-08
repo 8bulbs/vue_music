@@ -1,38 +1,44 @@
 <template>
   <div>
-    <div v-if="banners.length" class="slider-wrapper">
-      <div class="slider-content">
-        <slider ref="slider">
-            <div :key="index" v-for="(temp,index) in banners">
-              <a href="javascript:">
-                <img :src="temp.pic" alt="">
-              </a>
-            </div>
-        </slider>
-      </div>
-    </div>
-    <h1 class="tab-title">推荐歌单</h1>
-    <ul class="recommend" v-if="recommendList.length">
-      <li class="recommend-item" :key="index" v-for="(val,index) in recommendList">
-        <p class="recommend-playCount"><i class="iconfont">&#xe6c2;</i>{{val.playCount | playCount()}}</p>
-        <img class="recommend-img" :src="val.picUrl" alt="">
-        <p class="recommend-name">{{val.name}}</p>
-      </li>
-    </ul>
-    <h1 class="tab-title">最新音乐</h1>
-    <ul class="new-song-list" v-if="newSongList.length">
-      <li @click="$_playTheSong(val.song)" class="new-song-list-item" :key="index" v-for="(val,index) of newSongList">
-        <div class="new-song-list-item-container">
-          <h3 class="new-song-list-item-title">{{val.name}}</h3>
-          <p class="new-song-list-item-artists">{{val.song.artists[0].name}}</p>
-          <i class="iconfont">&#xe61d;</i>
+    <scroll ref="scroll" :data="recommendList">
+      <div v-if="banners.length" class="slider-wrapper">
+        <div class="slider-content">
+          <slider ref="slider">
+              <div :key="index" v-for="(temp,index) in banners">
+                <a href="javascript:">
+                  <img :src="temp.pic" alt="">
+                </a>
+              </div>
+          </slider>
         </div>
-      </li>
-    </ul>
+      </div>
+      <h1 class="tab-title" v-if="recommendList.length">推荐歌单</h1>
+      <ul class="recommend" v-if="recommendList.length">
+        <li class="recommend-item" :key="index" v-for="(val,index) in recommendList">
+          <p class="recommend-playCount"><i class="iconfont">&#xe6c2;</i>{{val.playCount | playCount()}}</p>
+          <img class="recommend-img" v-lazy="val.picUrl" alt="">
+          <p class="recommend-name">{{val.name}}</p>
+        </li>
+      </ul>
+      <h1 class="tab-title" v-if="newSongList.length">最新音乐</h1>
+      <ul class="new-song-list" v-if="newSongList.length">
+        <li @click="$_playTheSong(val.song)" class="new-song-list-item" :key="index" v-for="(val,index) of newSongList">
+          <div class="new-song-list-item-container">
+            <h3 class="new-song-list-item-title">{{val.name}}</h3>
+            <p class="new-song-list-item-artists">{{val.song.artists[0].name}}</p>
+            <i class="iconfont">&#xe61d;</i>
+          </div>
+        </li>
+      </ul>
+      <div class="loading-container" v-show="!newSongList.length">
+        <loading></loading>
+      </div>
+    </scroll>
   </div>
 </template>
 
 <script>
+import Scroll from 'base/scroll/scroll'
 import Slider from 'base/slider/slider'
 import { getBanner, getRecommend, getNewSong, test } from 'api/recommend'
 import { STATUS_OK } from 'api/config'
@@ -106,7 +112,8 @@ export default {
   },
   components: {
     Slider,
-    Loading
+    Loading,
+    Scroll
   }
 }
 </script>
@@ -187,4 +194,9 @@ export default {
           top 50%
           right 25px
           transform translateY(-50%)
+  .loading-container
+    position: absolute
+    width: 100%
+    top: 50%
+    transform: translateY(-50%)
 </style>
