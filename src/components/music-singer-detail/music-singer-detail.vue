@@ -6,25 +6,36 @@
           {{singer.artist.name}}
           <span class="singer-name-alias">{{singer.artist.alias[0]}}</span>
         </h5>
-        <img :src="singer.artist.picUrl" alt="" class="avatar">
+        <div class="avatar">
+          <img :src="singer.artist.picUrl" alt="">
+        </div>
+        <div class="loading-container" v-show="!singer.artist.picUrl">
+          <loading></loading>
+        </div>
         <i @click="$_back" class="iconfont">&#xe60b;</i>
       </div>
-      <ul v-if="singer.hotSongs.length">
-        <li @click="$_playTheSong(item)" :key="index" v-for="(item,index) in singer.hotSongs">
-          <div class="song-item">
-            <p class="song-item-title">{{item.name}}</p>
-            <i class="iconfont">&#xe61d;</i>
+      <div class="scroll-container">
+        <scroll class="scroll" :data="singer.hotSongs">
+          <div class="scroll-content">
+            <ul v-if="singer.hotSongs.length">
+              <li @click="$_playTheSong(index,singer.hotSongs)" :key="index" v-for="(item,index) in singer.hotSongs">
+                <div class="song-item">
+                  <p class="song-item-title">{{item.name}}</p>
+                  <i class="iconfont">&#xe61d;</i>
+                </div>
+              </li>
+            </ul>
           </div>
-        </li>
-      </ul>
+        </scroll>
+      </div>
     </div>
   </transition>
 </template>
 
 <script>
 import { mapMutations, mapGetters } from 'vuex'
-import { getSong } from 'api/song'
-import { STATUS_OK } from 'api/config'
+import Scroll from 'base/scroll/scroll'
+import Loading from 'base/loading/loading'
 
 export default {
   data() {
@@ -39,17 +50,11 @@ export default {
     ])
   },
   methods: {
-    $_playTheSong(item) {
-      getSong(item.id)
-        .then(res => {
-          if (res.status === STATUS_OK) {
-            let song = res.data.songs[0]
-            this.setPlayList([song])
-            this.setFullScreen(true)
-            this.setCurrentIndex(0)
-            this.setIsPlay(true)
-          }
-        })
+    $_playTheSong(index, songList) {
+      this.setPlayList(songList)
+      this.setFullScreen(true)
+      this.setCurrentIndex(index)
+      this.setIsPlay(true)
     },
     $_back() {
       this.$router.go(-1)
@@ -60,6 +65,10 @@ export default {
       setCurrentIndex: 'SET_CURRENT_INDEX',
       setIsPlay: 'SET_ISPLAY'
     })
+  },
+  components: {
+    Scroll,
+    Loading
   }
 }
 </script>
@@ -79,8 +88,12 @@ export default {
     right 0
     background $color-background
     .title
+      position fixed
       text-align center
       font-size $font-size-m
+      width 100%
+      height 250px
+      overflow hidden
       .singer-name
         position absolute
         width 100%
@@ -92,6 +105,11 @@ export default {
           font-size $font-size-s
       .avatar
         width 100%
+        overflow hidden
+        height 250px
+        img
+          height 100%
+          width 100%
       .iconfont
         position absolute
         display block
@@ -113,4 +131,17 @@ export default {
       top 0px
       right 15px
       font-size $font-size-m
+  .scroll-container
+    position fixed
+    width 100%
+    top 250px
+    bottom 0
+    .scroll
+      overflow hidden
+      height 100%
+  .loading-container
+    position: absolute
+    width: 100%
+    top: 50%
+    transform: translateY(-50%)
 </style>

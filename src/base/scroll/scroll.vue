@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     _initScroll() {
-      console.log('INIT')
       if (!this.$refs.wrapper) {
         return
       }
@@ -70,7 +69,7 @@ export default {
 
       if (this.pullup) {
         this.scroll.on('scrollEnd', () => {
-          if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+          if (this.scroll.y <= (this.scroll.maxScrollY + 250)) {
             this.$emit('scrollToEnd')
           }
         })
